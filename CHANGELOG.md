@@ -1,3 +1,6 @@
+## 1.0.1
+
+* Casting types fixes
 ## 1.0.0
 
-* TODO: Describe initial release.
+* Initial commit
