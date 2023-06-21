@@ -27,48 +27,52 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
         do {
             let inputs = try AVAudioSession.sharedInstance().currentRoute.inputs
             
-            if (inputs.isEmpty) {
-                result(nil)
-            } else {
+            if (!inputs.isEmpty) {
                 let input = inputs.first!
-                let parsedDevice: [String: String] = ["uid": input.uid, "name": input.portName]
-                try result(parsedDevice)
+                let parsedDevice: [String: String] = ["id": input.uid, "name": input.portName]
+                return try result(parsedDevice)
             }
             
+            return try result(FlutterError(
+                    code: "NONE_CURRENT_INPUT_FOUND",
+                    message: "There is none current audio route input",
+                    details: nil
+                )
+            )
         } catch {
-            result(FlutterError(
+            return result(FlutterError(
                     code: "GET_CURRENT_INPUT_ERROR",
                     message: "Something went wrong while trying to get the current audio route input.",
                     details: nil
                 )
             )
         }
-        
-        return
     }
 
     private func getCurrentOutput(result: FlutterResult) {
         do {
             let outputs = try AVAudioSession.sharedInstance().currentRoute.outputs
             
-            if (outputs.isEmpty) {
-                result(nil)
-            } else {
+            if (!outputs.isEmpty) {
                 let output = outputs.first!
-                let parsedDevice: [String: String] = ["uid": output.uid, "name": output.portName]
-                try result(parsedDevice)
+                let parsedDevice: [String: String] = ["id": output.uid, "name": output.portName]
+                return try result(parsedDevice)
             }
             
+            return try result(FlutterError(
+                    code: "NONE_CURRENT_OUTPUT_FOUND",
+                    message: "There is none current audio route output",
+                    details: nil
+                )
+            )
         } catch {
-            result(FlutterError(
+            return result(FlutterError(
                     code: "GET_CURRENT_OUTPUT_ERROR",
                     message: "Something went wrong while trying to get the current audio route output.",
                     details: nil
                 )
             )
         }
-        
-        return
     }
 
 }

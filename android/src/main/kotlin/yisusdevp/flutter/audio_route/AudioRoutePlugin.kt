@@ -1,84 +1,78 @@
 package yisusdevp.flutter.audio_route
 
-import androidx.annotation.NonNull
 import android.content.Context
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import java.lang.Exception
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
-/** AudioRoutePlugin */
+/** AudioRoutePlugin **/
 class AudioRoutePlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
   private lateinit var context: Context
 
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "yisusdevp.flutter/audio_route")
     channel.setMethodCallHandler(this)
     context = flutterPluginBinding.applicationContext
   }
 
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+  override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
-      "getCurrentInput" => {
+      "getCurrentInput" -> {
         getCurrentInput(context, result)
       }
-      "getCurrentOutput" => {
+      "getCurrentOutput" -> {
         getCurrentOutput(context, result)
       }
-    }
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+      else -> result.notImplemented()
     }
   }
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
   }
 
   private fun getCurrentInput(context: Context, result: Result) {
     try {
       val audioManager = context.getSystemService(AudioManager::class.java)
-      val inputs = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS)
+      val inputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS)
 
-      if (inputs.isEmpty()) {
-        return result(null)
+      if (inputs.isNotEmpty()) {
+        var inputDevice = inputs.first()
+        val parsedDevice: HashMap<String, String> = HashMap()
+        parsedDevice["uid"] = inputDevice.id.toString()
+        parsedDevice["name"] = inputDevice.productName.toString()
+
+        return result.success(parsedDevice)
       }
 
-      var inputDevice: inputs.first
-      val parsedDevice: HashMap<String, String> = HashMap()
-      parsedDevice["uid"] = inputDevice.id.toString()
-      parsedDevice["name"] = inputDevice.name
-
-      return result(parsedDevice)
+      return result.error( "NONE_CURRENT_INPUT_FOUND", "There is none current audio route input", null)
     } catch (e: Exception) {
-      result.error( "GET_CURRENT_INPUT_ERROR", "Something went wrong while trying to get the current audio route input.", "")
+      result.error( "GET_CURRENT_INPUT_ERROR", "Something went wrong while trying to get the current audio route input.", null)
     }
   }
 
   private fun getCurrentOutput(context: Context, result: Result) {
    try {
      val audioManager = context.getSystemService(AudioManager::class.java)
-     val outputs = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+     val outputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
 
-     if (outputs.isEmpty()) {
-       return result(null)
+     if (outputs.isNotEmpty()) {
+       var outputDevice = outputs.first()
+       val parsedDevice: HashMap<String, String> = HashMap()
+       parsedDevice["id"] = outputDevice.id.toString()
+       parsedDevice["name"] = outputDevice.productName.toString()
+
+       return result.success(parsedDevice)
      }
 
-     var outputDevice: outputs.first
-     val parsedDevice: HashMap<String, String> = HashMap()
-     parsedDevice["uid"] = outputDevice.id.toString()
-     parsedDevice["name"] = outputDevice.name
-
-     return result(parsedDevice)
+     return result.error( "NONE_CURRENT_OUTPUT_FOUND", "There is none current audio route output", null)
    } catch (e: Exception) {
-     result.error( "GET_CURRENT_OUTPUT_ERROR", "Something went wrong while trying to get the current audio route output.", "")
+     result.error( "GET_CURRENT_OUTPUT_ERROR", "Something went wrong while trying to get the current audio route output.", null)
    }
   }
 }
