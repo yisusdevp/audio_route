@@ -1,0 +1,26 @@
+name: audio_route
+description: A new Flutter plugin project.
+version: 1.0.0
+homepage:
+
+environment:
+  sdk: '>=2.19.2 <3.0.0'
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: yisusdevp.flutter.audio_route
+        pluginClass: AudioRoutePlugin
+      ios:
+        pluginClass: AudioRoutePlugin
