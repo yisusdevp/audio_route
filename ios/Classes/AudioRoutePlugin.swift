@@ -31,7 +31,7 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
                 result(nil)
             } else {
                 let input = inputs.first!
-                let parsedDevice = ["uid": input.uid, "name": input.portName]
+                let parsedDevice: [String: String] = ["uid": input.uid, "name": input.portName]
                 try result(parsedDevice)
             }
             
@@ -55,7 +55,7 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
                 result(nil)
             } else {
                 let output = outputs.first!
-                let parsedDevice = ["uid": output.uid, "name": output.portName]
+                let parsedDevice: [String: String] = ["uid": output.uid, "name": output.portName]
                 try result(parsedDevice)
             }
             

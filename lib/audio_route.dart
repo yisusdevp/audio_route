@@ -12,10 +12,11 @@ class AudioRoute {
 
   Future<AudioDevice?> getCurrentInput() async {
     try {
-      final inputDevice = await _channel.invokeMethod<Map<String, String>?>("getCurrentInput");
+      final inputDevice = await _channel.invokeMethod<Map<dynamic, dynamic>>("getCurrentInput");
 
       if (inputDevice != null) {
-        return AudioDeviceModel.fromMap(inputDevice);
+        final parsedDevice = Map<String, String>.from(inputDevice);
+        return AudioDeviceModel.fromMap(parsedDevice);
       }
 
       return null;
@@ -26,10 +27,11 @@ class AudioRoute {
 
   Future<AudioDevice?> getCurrentOutput() async {
     try {
-      final outputDevice = await _channel.invokeMethod<Map<String, String>?>("getCurrentOutput");
+      final outputDevice = await _channel.invokeMethod<Map<dynamic, dynamic>>("getCurrentOutput");
 
       if (outputDevice != null) {
-        return AudioDeviceModel.fromMap(outputDevice);
+        final parsedDevice = Map<String, String>.from(outputDevice);
+        return AudioDeviceModel.fromMap(parsedDevice);
       }
 
       return null;
