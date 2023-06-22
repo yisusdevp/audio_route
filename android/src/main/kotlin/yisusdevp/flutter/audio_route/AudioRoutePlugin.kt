@@ -63,19 +63,33 @@ class AudioRoutePlugin: FlutterPlugin, MethodCallHandler {
      val audioManager = context.getSystemService(AudioManager::class.java)
 
      val currentOutput = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO)
-     val deviceOutputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+//     val deviceOutputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
 
-     if (deviceOutputs.isNotEmpty()) {
-       var outputDevice = deviceOutputs.find { e -> e.productName.toString() == currentOutput.name.toString()  }
+//     if (deviceOutputs.isNotEmpty()) {
+//       var outputDevice = deviceOutputs.last()
 
-       if (outputDevice != null) {
+//       if (outputDevice != null) {
+//         val parsedDevice: HashMap<String, String> = HashMap()
+//         parsedDevice["id"] = outputDevice.id.toString()
+//         parsedDevice["name"] = outputDevice.productName.toString()
+//         parsedDevice["currentOutputName"] = currentOutput.name.toString()
+//         parsedDevice["tag"] = currentOutput.tag.toString()
+//         parsedDevice["category"] = currentOutput.category.toString()
+//         parsedDevice["type"] = currentOutput.deviceType.toString()
+//
+//         return result.success(parsedDevice)
+//       }
+
          val parsedDevice: HashMap<String, String> = HashMap()
-         parsedDevice["id"] = outputDevice.id.toString()
-         parsedDevice["name"] = outputDevice.productName.toString()
+         parsedDevice["id"] = "id"
+         parsedDevice["name"] = currentOutput.name.toString()
+         parsedDevice["tag"] = currentOutput.tag.toString()
+         parsedDevice["category"] = currentOutput.category.toString()
+         parsedDevice["type"] = currentOutput.deviceType.toString()
 
          return result.success(parsedDevice)
-       }
-     }
+
+//     }
 
      return result.error( "NONE_CURRENT_OUTPUT_FOUND", "There is none current audio route output", null)
    } catch (e: Exception) {
