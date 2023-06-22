@@ -1,3 +1,6 @@
+#### 1.0.3
+* Kotlin and Swift improvements
+
 #### 1.0.2
 * Kotlin fixes & general logic improvements
 

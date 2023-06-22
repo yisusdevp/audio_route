@@ -28,8 +28,9 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
             let inputs = try AVAudioSession.sharedInstance().currentRoute.inputs
             
             if (!inputs.isEmpty) {
-                let input = inputs.first!
-                let parsedDevice: [String: String] = ["id": input.uid, "name": input.portName]
+                let inputDevice = inputs.first!
+                let inputId = inputDevice.uid.components(separatedBy: "-").first!
+                let parsedDevice: [String: String] = ["id": inputId, "name": inputDevice.portName]
                 return try result(parsedDevice)
             }
             
@@ -54,8 +55,9 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
             let outputs = try AVAudioSession.sharedInstance().currentRoute.outputs
             
             if (!outputs.isEmpty) {
-                let output = outputs.first!
-                let parsedDevice: [String: String] = ["id": output.uid, "name": output.portName]
+                let outputDevice = outputs.first!
+                let outputId = outputDevice.uid.components(separatedBy: "-").first!
+                let parsedDevice: [String: String] = ["id": outputId, "name": outputDevice.portName]
                 return try result(parsedDevice)
             }
             

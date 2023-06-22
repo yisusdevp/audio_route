@@ -1,7 +1,7 @@
 name: audio_route
-description: A new Flutter plugin project.
-version: 1.0.2
-homepage:
+description: Flutter plugin to get all the information about the device audio routes.
+version: 1.0.3
+homepage: https://github.com/yisusdevp/audio_route
 
 environment:
   sdk: '>=2.19.2 <3.0.0'

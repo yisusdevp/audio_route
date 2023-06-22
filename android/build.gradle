@@ -1,5 +1,5 @@
 group 'yisusdevp.flutter.audio_route'
-version '1.0-SNAPSHOT'
+version '1.0.3'
 
 buildscript {
     ext.kotlin_version = '1.8.22'
@@ -41,6 +41,6 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 23
     }
 }

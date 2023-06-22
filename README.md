@@ -1,6 +1,6 @@
 # audio_route
 
-A new Flutter plugin project.
+Flutter plugin to get all the information about the device audio routes.
 
 ## Getting Started
 

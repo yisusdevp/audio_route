@@ -4,6 +4,8 @@ import android.content.Context
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaRouter
+import android.os.Build
+import androidx.annotation.RequiresApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -38,6 +40,7 @@ class AudioRoutePlugin: FlutterPlugin, MethodCallHandler {
   }
 
   private fun getCurrentInput(context: Context, result: Result) {
+    // TODO: Refactor this logic, currently not working
     try {
       val audioManager = context.getSystemService(AudioManager::class.java)
       val inputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS)
@@ -45,7 +48,7 @@ class AudioRoutePlugin: FlutterPlugin, MethodCallHandler {
       if (inputs.isNotEmpty()) {
         var inputDevice = inputs.first()
         val parsedDevice: HashMap<String, String> = HashMap()
-        parsedDevice["uid"] = inputDevice.id.toString()
+        parsedDevice["id"] = inputDevice.id.toString()
         parsedDevice["name"] = inputDevice.productName.toString()
 
         return result.success(parsedDevice)
@@ -63,33 +66,18 @@ class AudioRoutePlugin: FlutterPlugin, MethodCallHandler {
      val audioManager = context.getSystemService(AudioManager::class.java)
 
      val currentOutput = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO)
-//     val deviceOutputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+     val deviceOutputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
 
-//     if (deviceOutputs.isNotEmpty()) {
-//       var outputDevice = deviceOutputs.last()
+     if (deviceOutputs.isNotEmpty()) {
+       val outputDevice = deviceOutputs.find { e -> e.productName.toString() == currentOutput.name.toString() } ?: deviceOutputs.first()
 
-//       if (outputDevice != null) {
-//         val parsedDevice: HashMap<String, String> = HashMap()
-//         parsedDevice["id"] = outputDevice.id.toString()
-//         parsedDevice["name"] = outputDevice.productName.toString()
-//         parsedDevice["currentOutputName"] = currentOutput.name.toString()
-//         parsedDevice["tag"] = currentOutput.tag.toString()
-//         parsedDevice["category"] = currentOutput.category.toString()
-//         parsedDevice["type"] = currentOutput.deviceType.toString()
-//
-//         return result.success(parsedDevice)
-//       }
+       val parsedDevice: HashMap<String, String> = HashMap()
+       parsedDevice["id"] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) outputDevice.address else outputDevice.id.toString()
+       parsedDevice["name"] = outputDevice.productName.toString()
 
-         val parsedDevice: HashMap<String, String> = HashMap()
-         parsedDevice["id"] = "id"
-         parsedDevice["name"] = currentOutput.name.toString()
-         parsedDevice["tag"] = currentOutput.tag.toString()
-         parsedDevice["category"] = currentOutput.category.toString()
-         parsedDevice["type"] = currentOutput.deviceType.toString()
+       return result.success(parsedDevice)
 
-         return result.success(parsedDevice)
-
-//     }
+     }
 
      return result.error( "NONE_CURRENT_OUTPUT_FOUND", "There is none current audio route output", null)
    } catch (e: Exception) {
