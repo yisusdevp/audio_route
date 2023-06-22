@@ -3,6 +3,7 @@ package yisusdevp.flutter.audio_route
 import android.content.Context
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.media.MediaRouter
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -58,16 +59,22 @@ class AudioRoutePlugin: FlutterPlugin, MethodCallHandler {
 
   private fun getCurrentOutput(context: Context, result: Result) {
    try {
+     val mediaRouter = context.getSystemService(MediaRouter::class.java)
      val audioManager = context.getSystemService(AudioManager::class.java)
-     val outputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
 
-     if (outputs.isNotEmpty()) {
-       var outputDevice = outputs.first()
-       val parsedDevice: HashMap<String, String> = HashMap()
-       parsedDevice["id"] = outputDevice.id.toString()
-       parsedDevice["name"] = outputDevice.productName.toString()
+     val currentOutput = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO)
+     val deviceOutputs: Array<AudioDeviceInfo> = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
 
-       return result.success(parsedDevice)
+     if (deviceOutputs.isNotEmpty()) {
+       var outputDevice = deviceOutputs.find { e -> e.productName.toString() == currentOutput.name.toString()  }
+
+       if (outputDevice != null) {
+         val parsedDevice: HashMap<String, String> = HashMap()
+         parsedDevice["id"] = outputDevice.id.toString()
+         parsedDevice["name"] = outputDevice.productName.toString()
+
+         return result.success(parsedDevice)
+       }
      }
 
      return result.error( "NONE_CURRENT_OUTPUT_FOUND", "There is none current audio route output", null)
