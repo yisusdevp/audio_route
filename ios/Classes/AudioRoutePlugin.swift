@@ -34,12 +34,7 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
                 return try result(parsedDevice)
             }
             
-            return try result(FlutterError(
-                    code: "NONE_CURRENT_INPUT_FOUND",
-                    message: "There is none current audio route input",
-                    details: nil
-                )
-            )
+            return try result(nil)
         } catch {
             return result(FlutterError(
                     code: "GET_CURRENT_INPUT_ERROR",
@@ -61,12 +56,7 @@ public class AudioRoutePlugin: NSObject, FlutterPlugin {
                 return try result(parsedDevice)
             }
             
-            return try result(FlutterError(
-                    code: "NONE_CURRENT_OUTPUT_FOUND",
-                    message: "There is none current audio route output",
-                    details: nil
-                )
-            )
+            return try result(nil)
         } catch {
             return result(FlutterError(
                     code: "GET_CURRENT_OUTPUT_ERROR",
