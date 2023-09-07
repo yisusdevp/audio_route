@@ -10,22 +10,24 @@ class AudioRoute {
 
   final MethodChannel _channel = const MethodChannel('yisusdevp.flutter/audio_route');
 
-  Future<AudioDevice> getCurrentInput() async {
+  Future<AudioDevice?> getCurrentInput() async {
     try {
       final inputDevice = await _channel.invokeMethod<Map<dynamic, dynamic>>("getCurrentInput");
+      if (inputDevice == null) return null;
 
-      final parsedDevice = Map<String, String>.from(inputDevice!);
+      final parsedDevice = Map<String, String>.from(inputDevice);
       return AudioDeviceModel.fromMap(parsedDevice);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<AudioDevice> getCurrentOutput() async {
+  Future<AudioDevice?> getCurrentOutput() async {
     try {
       final outputDevice = await _channel.invokeMethod<Map<dynamic, dynamic>>("getCurrentOutput");
+      if (outputDevice == null) return null;
 
-      final parsedDevice = Map<String, String>.from(outputDevice!);
+      final parsedDevice = Map<String, String>.from(outputDevice);
       return AudioDeviceModel.fromMap(parsedDevice);
     } catch (e) {
       rethrow;

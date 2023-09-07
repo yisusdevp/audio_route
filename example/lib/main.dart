@@ -34,8 +34,12 @@ class HomePage extends StatelessWidget {
                 showAboutDialog(
                   context: context,
                   children: [
-                    Text("ID: ${device.id}"),
-                    Text("Name: ${device.name}"),
+                    if (device != null) ...[
+                      Text("ID: ${device.id}"),
+                      Text("Name: ${device.name}"),
+                    ] else ...[
+                      const Text("Current device output not found!"),
+                    ]
                   ],
                 );
               }
